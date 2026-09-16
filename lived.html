@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Where I've Lived — Oak</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body {
+            max-width: 720px;
+            margin: 60px auto;
+            padding: 0 20px;
+            font-family: -apple-system, Georgia, serif;
+            line-height: 1.6;
+            color: #222;
+            background: #fff;
+        }
+        h1 {
+            font-size: 1.4em;
+            margin-bottom: 0;
+        }
+        a {
+            color: #222;
+        }
+        p {
+            margin: 0.8em 0;
+        }
+        #map {
+            width: 100%;
+            height: 480px;
+            margin: 1.5em 0;
+            border: 1px solid #ddd;
+        }
+        .popup-photo {
+            width: 100%;
+            max-width: 220px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+        .popup-title {
+            font-weight: bold;
+            font-size: 1.05em;
+        }
+        .popup-years {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Where I've lived</h1>
+<p><a href="index.html">&larr; back home</a></p>
+<p>Bubble size shows roughly how long I lived in each place. Click a bubble for details.</p>
+
+<div id="map"></div>
+
+<script>
+    // Edit this list to fix locations, dates, or add photos.
+    // photo: put a path to an image in your repo, e.g. "photos/austin.jpg"
+    // Leave photo as "" if you don't have one yet, a placeholder will show instead.
+    const places = [
+        { name: "San Antonio, Texas", lat: 29.4241, lng: -98.4936, start: 2001, end: 2004, photo: "" },
+        { name: "Würzburg, Germany", lat: 49.7913, lng: 9.9534, start: 2004, end: 2006, photo: "" },
+        { name: "Giebelstadt, Germany", lat: 49.6499, lng: 9.9599, start: 2006, end: 2008, photo: "" },
+        { name: "Pleasant Grove, Utah", lat: 40.3641, lng: -111.7385, start: 2008, end: 2013, photo: "" },
+        { name: "New Plymouth, New Zealand", lat: -39.0556, lng: 174.0752, start: 2013, end: 2018, photo: "" },
+        { name: "Clydevale, New Zealand", lat: -46.1667, lng: 169.8167, start: 2018, end: 2019, photo: "" },
+        { name: "Provo, Utah", lat: 40.2338, lng: -111.6585, start: 2019, end: 2020, photo: "" },
+        { name: "Ashburton, New Zealand", lat: -43.9033, lng: 171.7483, start: 2020, end: 2020, photo: "" },
+        { name: "Queenstown, New Zealand", lat: -45.0312, lng: 168.6626, start: 2021, end: 2021, photo: "" },
+        { name: "Dunedin, New Zealand", lat: -45.8788, lng: 170.5028, start: 2022, end: 2024, photo: "" },
+        { name: "Te Anau, New Zealand", lat: -45.4131, lng: 167.7186, start: 2025, end: 2025, photo: "" },
+        { name: "Lucknow, India", lat: 26.8467, lng: 80.9462, start: 2026, end: 2026, photo: "" }
+    ];
+
+    const map = L.map('map').setView([15, 40], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    places.forEach(function(p) {
+        const years = Math.max(p.end - p.start, 1);
+        const radius = 6 + years * 3;
+
+        const marker = L.circleMarker([p.lat, p.lng], {
+            radius: radius,
+            fillColor: "#c0392b",
+            color: "#8e2a1f",
+            weight: 1,
+            fillOpacity: 0.55
+        }).addTo(map);
+
+        const dateLabel = p.start === p.end ? p.start : p.start + "–" + p.end;
+        const photoHtml = p.photo
+            ? '<img class="popup-photo" src="' + p.photo + '" alt="' + p.name + '">'
+            : '<div class="popup-photo" style="background:#eee; display:flex; align-items:center; justify-content:center; color:#999; font-size:0.85em;">no photo yet</div>';
+
+        const popupHtml =
+            photoHtml +
+            '<div class="popup-title">' + p.name + '</div>' +
+            '<div class="popup-years">' + dateLabel + ' (' + years + (years === 1 ? ' year' : ' years') + ')</div>';
+
+        marker.bindPopup(popupHtml);
+    });
+</script>
+
+</body>
+</html>
